@@ -41,7 +41,7 @@ namespace GroupProjectPrn212.Views
                 KetQuaId = _selected?.KetQuaId ?? 0,
                 DangKyId = cbDangKy.SelectedValue is int dk ? dk : 0,
                 Diem = diem,
-                XepLoai = txtXepLoai.Text.Trim(),
+                XepLoai = _selected.XepLoai,
                 GhiChu = txtGhiChu.Text.Trim(),
                 IsDeleted = false
             };
@@ -51,7 +51,7 @@ namespace GroupProjectPrn212.Views
         {
             cbDangKy.SelectedValue = x.DangKyId;
             txtDiem.Text = x.Diem?.ToString();
-            txtXepLoai.Text = x.XepLoai;
+         
             txtGhiChu.Text = x.GhiChu;
         }
 
@@ -60,7 +60,7 @@ namespace GroupProjectPrn212.Views
             _selected = null;
             cbDangKy.SelectedIndex = -1;
             txtDiem.Clear();
-            txtXepLoai.Clear();
+           
             txtGhiChu.Clear();
             dgKetQua.SelectedItem = null;
         }
