@@ -1,0 +1,52 @@
+﻿<Window x:Class="GroupProjectPrn212.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:views="clr-namespace:GroupProjectPrn212.Views"
+        Title="Quản lý trung tâm đào tạo" Height="860" Width="1440"
+        WindowStartupLocation="CenterScreen"
+        Background="#F3F4F6">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Views/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <DockPanel>
+        <Border DockPanel.Dock="Left" Width="240" Background="#0F172A">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Margin="16">
+                    <TextBlock Text="PRN212" Foreground="White" FontSize="24" FontWeight="Bold"/>
+                    <TextBlock Text="Quản lý trung tâm" Foreground="#CBD5E1" Margin="0,4,0,0"/>
+                </StackPanel>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="8,0">
+                        <Button Content="Dashboard" Click="NavigateToDashboard" Margin="8,4" Padding="12,10"/>
+                        <Button Content="Học viên" Click="NavigateToHocVien" Margin="8,4" Padding="12,10"/>
+                        <Button Content="Giảng viên" Click="NavigateToGiangVien" Margin="8,4" Padding="12,10"/>
+                        <Button Content="Khóa học" Click="NavigateToKhoaHoc" Margin="8,4" Padding="12,10"/>
+                        <Button Content="Phòng học" Click="NavigateToPhongHoc" Margin="8,4" Padding="12,10"/>
+                        <Button Content="Ca học" Click="NavigateToCaHoc" Margin="8,4" Padding="12,10"/>
+                        <Button Content="Lớp học" Click="NavigateToLopHoc" Margin="8,4" Padding="12,10"/>
+                        <Button Content="Đăng ký" Click="NavigateToDangKy" Margin="8,4" Padding="12,10"/>
+                        <Button Content="Học phí" Click="NavigateToHocPhi" Margin="8,4" Padding="12,10"/>
+                        <Button Content="Kết quả" Click="NavigateToKetQua" Margin="8,4" Padding="12,10"/>
+                        <Button Content="Tài khoản" Click="NavigateToTaiKhoan" Margin="8,4" Padding="12,10"/>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <Button Grid.Row="2" Content="Đăng xuất" Click="btnLogout_Click" Margin="16" Padding="12,10"/>
+            </Grid>
+        </Border>
+
+        <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" Margin="20"/>
+    </DockPanel>
+</Window>

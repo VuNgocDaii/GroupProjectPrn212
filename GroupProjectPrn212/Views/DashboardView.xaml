@@ -1,0 +1,58 @@
+﻿<Page x:Class="GroupProjectPrn212.Views.DashboardView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Dashboard"
+      Background="#F3F4F6">
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Views/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <UniformGrid Columns="4" Margin="0,0,0,12">
+                <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,12,12">
+                    <StackPanel>
+                        <TextBlock Text="Tổng học viên" Foreground="#6B7280"/>
+                        <TextBlock x:Name="txtTongHocVien" Text="0" FontSize="28" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,12,12">
+                    <StackPanel>
+                        <TextBlock Text="Tổng giảng viên" Foreground="#6B7280"/>
+                        <TextBlock x:Name="txtTongGiangVien" Text="0" FontSize="28" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,12,12">
+                    <StackPanel>
+                        <TextBlock Text="Lớp đang mở" Foreground="#6B7280"/>
+                        <TextBlock x:Name="txtTongLopDangMo" Text="0" FontSize="28" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,12">
+                    <StackPanel>
+                        <TextBlock Text="Doanh thu" Foreground="#6B7280"/>
+                        <TextBlock x:Name="txtTongDoanhThu" Text="0 đ" FontSize="28" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <StackPanel>
+                    <TextBlock Text="Lớp học" Style="{StaticResource GroupTitleStyle}"/>
+                    <DataGrid x:Name="dgRecentClasses">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Mã lớp" Binding="{Binding MaLop}" Width="120"/>
+                            <DataGridTextColumn Header="Tên lớp" Binding="{Binding TenLop}" Width="*"/>
+                            <DataGridTextColumn Header="Trạng thái" Binding="{Binding TrangThai}" Width="150"/>
+                            <DataGridTextColumn Header="Sĩ số" Binding="{Binding SiSoToiDa}" Width="100"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

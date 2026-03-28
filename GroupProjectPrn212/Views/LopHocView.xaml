@@ -1,0 +1,93 @@
+﻿<Page x:Class="GroupProjectPrn212.Views.LopHocView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Lớp học"
+      Background="#F3F4F6">
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Views/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <Border Style="{StaticResource CardBorderStyle}">
+                <StackPanel>
+                    <TextBlock Text="Bộ lọc" Style="{StaticResource GroupTitleStyle}"/>
+                    <WrapPanel>
+                        <TextBox x:Name="txtKeyword" Width="280" Style="{StaticResource InputTextBoxStyle}"/><Button Content="Tìm kiếm" Click="btnSearch_Click" Style="{StaticResource PrimaryButtonStyle}" Width="120"/><Button Content="Làm mới" Click="btnRefresh_Click" Style="{StaticResource SecondaryButtonStyle}" Width="120"/>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <StackPanel>
+                    <TextBlock Text="Thông tin lớp học" Style="{StaticResource GroupTitleStyle}"/>
+
+<Grid>
+    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+    <StackPanel Grid.Column="0" Margin="0,0,12,0">
+        <TextBlock Text="Mã lớp" Style="{StaticResource FieldLabelStyle}"/>
+        <TextBox x:Name="txtMaLop" Style="{StaticResource InputTextBoxStyle}"/>
+        <TextBlock Text="Khóa học" Style="{StaticResource FieldLabelStyle}"/>
+        <ComboBox x:Name="cbKhoaHoc" DisplayMemberPath="TenKhoaHoc" SelectedValuePath="KhoaHocId" Style="{StaticResource InputComboBoxStyle}"/>
+        <TextBlock Text="Phòng học" Style="{StaticResource FieldLabelStyle}"/>
+        <ComboBox x:Name="cbPhongHoc" DisplayMemberPath="TenPhong" SelectedValuePath="PhongHocId" Style="{StaticResource InputComboBoxStyle}"/>
+        <TextBlock Text="Ngày bắt đầu" Style="{StaticResource FieldLabelStyle}"/>
+        <DatePicker x:Name="dpNgayBatDau" Style="{StaticResource InputDatePickerStyle}"/>
+        <TextBlock Text="Thứ học" Style="{StaticResource FieldLabelStyle}"/>
+        <TextBox x:Name="txtThuHoc" Style="{StaticResource InputTextBoxStyle}"/>
+        <TextBlock Text="Trạng thái" Style="{StaticResource FieldLabelStyle}"/>
+        <ComboBox x:Name="cbTrangThai" Style="{StaticResource InputComboBoxStyle}">
+            <ComboBoxItem Content="Đang mở"/>
+            <ComboBoxItem Content="Đã kết thúc"/>
+            <ComboBoxItem Content="Tạm hoãn"/>
+        </ComboBox>
+    </StackPanel>
+    <StackPanel Grid.Column="1">
+        <TextBlock Text="Tên lớp" Style="{StaticResource FieldLabelStyle}"/>
+        <TextBox x:Name="txtTenLop" Style="{StaticResource InputTextBoxStyle}"/>
+        <TextBlock Text="Giảng viên" Style="{StaticResource FieldLabelStyle}"/>
+        <ComboBox x:Name="cbGiangVien" DisplayMemberPath="HoTen" SelectedValuePath="GiangVienId" Style="{StaticResource InputComboBoxStyle}"/>
+        <TextBlock Text="Ca học" Style="{StaticResource FieldLabelStyle}"/>
+        <ComboBox x:Name="cbCaHoc" DisplayMemberPath="TenCa" SelectedValuePath="CaHocId" Style="{StaticResource InputComboBoxStyle}"/>
+        <TextBlock Text="Ngày kết thúc" Style="{StaticResource FieldLabelStyle}"/>
+        <DatePicker x:Name="dpNgayKetThuc" Style="{StaticResource InputDatePickerStyle}"/>
+        <TextBlock Text="Sĩ số tối đa" Style="{StaticResource FieldLabelStyle}"/>
+        <TextBox x:Name="txtSiSoToiDa" Style="{StaticResource InputTextBoxStyle}"/>
+    </StackPanel>
+</Grid>
+
+                    <WrapPanel HorizontalAlignment="Right" Margin="0,8,0,0">
+                        <Button x:Name="btnAdd" Content="Thêm" Click="btnAdd_Click" Style="{StaticResource PrimaryButtonStyle}" Width="110"/>
+                        <Button x:Name="btnUpdate" Content="Sửa" Click="btnUpdate_Click" Style="{StaticResource SecondaryButtonStyle}" Width="110"/>
+                        <Button x:Name="btnDelete" Content="Xóa" Click="btnDelete_Click" Style="{StaticResource DangerButtonStyle}" Width="110"/>
+                        <Button x:Name="btnClear" Content="Clear" Click="btnClear_Click" Style="{StaticResource SecondaryButtonStyle}" Width="110"/>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <StackPanel>
+                    <TextBlock Text="Danh sách lớp học" Style="{StaticResource GroupTitleStyle}"/>
+                    <DataGrid x:Name="dgLopHoc" SelectionChanged="dgLopHoc_SelectionChanged">
+                        <DataGrid.Columns>
+
+<DataGridTextColumn Header="ID" Binding="{Binding LopHocId}" Width="70"/>
+<DataGridTextColumn Header="Mã lớp" Binding="{Binding MaLop}" Width="120"/>
+<DataGridTextColumn Header="Tên lớp" Binding="{Binding TenLop}" Width="*"/>
+<DataGridTextColumn Header="Khóa học" Binding="{Binding KhoaHoc.TenKhoaHoc}" Width="160"/>
+<DataGridTextColumn Header="Giảng viên" Binding="{Binding GiangVien.HoTen}" Width="160"/>
+<DataGridTextColumn Header="Phòng" Binding="{Binding PhongHoc.TenPhong}" Width="120"/>
+<DataGridTextColumn Header="Ca" Binding="{Binding CaHoc.TenCa}" Width="100"/>
+<DataGridTextColumn Header="Trạng thái" Binding="{Binding TrangThai}" Width="120"/>
+
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

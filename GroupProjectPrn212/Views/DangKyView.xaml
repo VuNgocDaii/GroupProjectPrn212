@@ -1,0 +1,75 @@
+﻿<Page x:Class="GroupProjectPrn212.Views.DangKyView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Đăng ký"
+      Background="#F3F4F6">
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Views/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <Border Style="{StaticResource CardBorderStyle}">
+                <StackPanel>
+                    <TextBlock Text="Bộ lọc" Style="{StaticResource GroupTitleStyle}"/>
+                    <WrapPanel>
+                        <TextBox x:Name="txtKeyword" Width="280" Style="{StaticResource InputTextBoxStyle}"/><Button Content="Lọc theo học viên" Click="btnSearch_Click" Style="{StaticResource PrimaryButtonStyle}" Width="140"/><Button Content="Làm mới" Click="btnRefresh_Click" Style="{StaticResource SecondaryButtonStyle}" Width="120"/>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <StackPanel>
+                    <TextBlock Text="Thông tin đăng ký" Style="{StaticResource GroupTitleStyle}"/>
+
+<Grid>
+    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+    <StackPanel Grid.Column="0" Margin="0,0,12,0">
+        <TextBlock Text="Học viên" Style="{StaticResource FieldLabelStyle}"/>
+        <ComboBox x:Name="cbHocVien" DisplayMemberPath="HoTen" SelectedValuePath="HocVienId" Style="{StaticResource InputComboBoxStyle}"/>
+        <TextBlock Text="Ngày đăng ký" Style="{StaticResource FieldLabelStyle}"/>
+        <DatePicker x:Name="dpNgayDangKy" Style="{StaticResource InputDatePickerStyle}"/>
+    </StackPanel>
+    <StackPanel Grid.Column="1">
+        <TextBlock Text="Lớp học" Style="{StaticResource FieldLabelStyle}"/>
+        <ComboBox x:Name="cbLopHoc" DisplayMemberPath="TenLop" SelectedValuePath="LopHocId" Style="{StaticResource InputComboBoxStyle}"/>
+        <TextBlock Text="Trạng thái" Style="{StaticResource FieldLabelStyle}"/>
+        <ComboBox x:Name="cbTrangThai" Style="{StaticResource InputComboBoxStyle}">
+            <ComboBoxItem Content="Đã đăng ký"/>
+            <ComboBoxItem Content="Hủy"/>
+        </ComboBox>
+    </StackPanel>
+</Grid>
+
+                    <WrapPanel HorizontalAlignment="Right" Margin="0,8,0,0">
+                        <Button x:Name="btnAdd" Content="Thêm" Click="btnAdd_Click" Style="{StaticResource PrimaryButtonStyle}" Width="110"/>
+                        <Button x:Name="btnUpdate" Content="Sửa" Click="btnUpdate_Click" Style="{StaticResource SecondaryButtonStyle}" Width="110"/>
+                        <Button x:Name="btnDelete" Content="Xóa" Click="btnDelete_Click" Style="{StaticResource DangerButtonStyle}" Width="110"/>
+                        <Button x:Name="btnClear" Content="Clear" Click="btnClear_Click" Style="{StaticResource SecondaryButtonStyle}" Width="110"/>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <StackPanel>
+                    <TextBlock Text="Danh sách đăng ký" Style="{StaticResource GroupTitleStyle}"/>
+                    <DataGrid x:Name="dgDangKy" SelectionChanged="dgDangKy_SelectionChanged">
+                        <DataGrid.Columns>
+
+<DataGridTextColumn Header="ID" Binding="{Binding DangKyId}" Width="70"/>
+<DataGridTextColumn Header="Học viên" Binding="{Binding HocVien.HoTen}" Width="*"/>
+<DataGridTextColumn Header="Lớp học" Binding="{Binding LopHoc.TenLop}" Width="220"/>
+<DataGridTextColumn Header="Ngày đăng ký" Binding="{Binding NgayDangKy}" Width="140"/>
+<DataGridTextColumn Header="Trạng thái" Binding="{Binding TrangThai}" Width="120"/>
+
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>
