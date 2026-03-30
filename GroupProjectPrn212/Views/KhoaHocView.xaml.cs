@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using GroupProjectPrn212.BLL;
@@ -14,10 +14,58 @@ namespace GroupProjectPrn212.Views
         public KhoaHocView()
         {
             InitializeComponent();
-            LoadData();
+            if (!DesignerProperties.GetIsInDesignMode(this))
+            {
+                LoadData();
+            }
         }
 
-        private void LoadData() => dgKhoaHoc.ItemsSource = _bll.GetAll();
+        private void LoadData()
+        {
+            dgKhoaHoc.ItemsSource = null;
+            dgKhoaHoc.ItemsSource = _bll.GetAll();
+        }
+
+        private bool ValidateForm(out string message)
+        {
+            if (!FrontendValidation.IsRequired(txtMaKhoaHoc.Text))
+            {
+                message = "Mã khóa học không được để trống.";
+                txtMaKhoaHoc.Focus();
+                return false;
+            }
+
+            if (!FrontendValidation.IsRequired(txtTenKhoaHoc.Text))
+            {
+                message = "Tên khóa học không được để trống.";
+                txtTenKhoaHoc.Focus();
+                return false;
+            }
+
+            if (!FrontendValidation.IsRequired(cbLoaiKhoaHoc.Text))
+            {
+                message = "Vui lòng chọn loại khóa học.";
+                cbLoaiKhoaHoc.Focus();
+                return false;
+            }
+
+            if (!FrontendValidation.IsPositiveDecimal(txtHocPhi.Text, out _))
+            {
+                message = "Học phí phải lớn hơn 0.";
+                txtHocPhi.Focus();
+                return false;
+            }
+
+            if (!FrontendValidation.IsPositiveInt(txtThoiLuong.Text, out _))
+            {
+                message = "Thời lượng phải lớn hơn 0.";
+                txtThoiLuong.Focus();
+                return false;
+            }
+
+            message = string.Empty;
+            return true;
+        }
 
         private KhoaHoc BuildEntityFromForm()
         {
@@ -61,6 +109,7 @@ namespace GroupProjectPrn212.Views
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
+            if (!ValidateForm(out string error)) { MessageBox.Show(error); return; }
             var msg = _bll.Add(BuildEntityFromForm());
             MessageBox.Show(msg);
             if (msg == "OK") { LoadData(); ClearForm(); }
@@ -69,6 +118,7 @@ namespace GroupProjectPrn212.Views
         private void btnUpdate_Click(object sender, RoutedEventArgs e)
         {
             if (_selected == null) { MessageBox.Show("Chọn khóa học cần sửa."); return; }
+            if (!ValidateForm(out string error)) { MessageBox.Show(error); return; }
             var msg = _bll.Update(BuildEntityFromForm());
             MessageBox.Show(msg);
             if (msg == "OK") { LoadData(); ClearForm(); }

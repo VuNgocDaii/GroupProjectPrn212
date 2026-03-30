@@ -12,8 +12,34 @@ namespace GroupProjectPrn212.Views
             InitializeComponent();
         }
 
+        private bool ValidateForm(out string message)
+        {
+            if (!FrontendValidation.IsRequired(txtUsername.Text))
+            {
+                message = "Vui lòng nhập tên đăng nhập.";
+                txtUsername.Focus();
+                return false;
+            }
+
+            if (!FrontendValidation.IsRequired(txtPassword.Password))
+            {
+                message = "Vui lòng nhập mật khẩu.";
+                txtPassword.Focus();
+                return false;
+            }
+
+            message = string.Empty;
+            return true;
+        }
+
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
+            if (!ValidateForm(out string error))
+            {
+                txtMessage.Text = error;
+                return;
+            }
+
             string username = txtUsername.Text.Trim();
             string password = txtPassword.Password.Trim();
 

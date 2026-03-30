@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using GroupProjectPrn212.BLL;
@@ -14,10 +14,58 @@ namespace GroupProjectPrn212.Views
         public TaiKhoanView()
         {
             InitializeComponent();
-            LoadData();
+            if (!DesignerProperties.GetIsInDesignMode(this))
+            {
+                LoadData();
+            }
         }
 
-        private void LoadData() => dgTaiKhoan.ItemsSource = _bll.GetAll();
+        private void LoadData()
+        {
+            dgTaiKhoan.ItemsSource = null;
+            dgTaiKhoan.ItemsSource = _bll.GetAll();
+        }
+
+        private bool ValidateForm(out string message)
+        {
+            if (!FrontendValidation.IsRequired(txtTenDangNhap.Text))
+            {
+                message = "Tên đăng nhập không được để trống.";
+                txtTenDangNhap.Focus();
+                return false;
+            }
+
+            if (_selected == null && !FrontendValidation.IsRequired(txtMatKhau.Password))
+            {
+                message = "Mật khẩu không được để trống.";
+                txtMatKhau.Focus();
+                return false;
+            }
+
+            if (!FrontendValidation.IsRequired(txtHoTen.Text))
+            {
+                message = "Họ tên không được để trống.";
+                txtHoTen.Focus();
+                return false;
+            }
+
+            if (!FrontendValidation.IsRequired(cbVaiTro.Text))
+            {
+                message = "Vui lòng chọn vai trò.";
+                cbVaiTro.Focus();
+                return false;
+            }
+
+            if (!FrontendValidation.IsRequired(cbTrangThai.Text))
+            {
+                message = "Vui lòng chọn trạng thái.";
+                cbTrangThai.Focus();
+                return false;
+            }
+
+            message = string.Empty;
+            return true;
+        }
 
         private TaiKhoan BuildEntityFromForm()
         {
@@ -58,6 +106,7 @@ namespace GroupProjectPrn212.Views
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
+            if (!ValidateForm(out string error)) { MessageBox.Show(error); return; }
             var msg = _bll.Add(BuildEntityFromForm());
             MessageBox.Show(msg);
             if (msg == "OK") { LoadData(); ClearForm(); }
@@ -66,6 +115,7 @@ namespace GroupProjectPrn212.Views
         private void btnUpdate_Click(object sender, RoutedEventArgs e)
         {
             if (_selected == null) { MessageBox.Show("Chọn tài khoản cần sửa."); return; }
+            if (!ValidateForm(out string error)) { MessageBox.Show(error); return; }
             var msg = _bll.Update(BuildEntityFromForm());
             MessageBox.Show(msg);
             if (msg == "OK") { LoadData(); ClearForm(); }

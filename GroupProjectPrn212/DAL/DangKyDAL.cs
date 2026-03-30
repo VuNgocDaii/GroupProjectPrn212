@@ -12,7 +12,7 @@ namespace GroupProjectPrn212.DAL
                 .Include(x => x.HocVien)
                 .Include(x => x.LopHoc)
                 .Where(x => x.IsDeleted == false)
-                .OrderByDescending(x => x.DangKyId)
+                .OrderBy(x => x.NgayDangKy)
                 .ToList();
         }
 

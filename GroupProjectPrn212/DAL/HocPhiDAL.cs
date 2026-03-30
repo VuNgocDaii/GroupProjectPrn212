@@ -14,7 +14,7 @@ namespace GroupProjectPrn212.DAL
                 .Include(x => x.DangKy)
                     .ThenInclude(x => x.LopHoc)
                 .Where(x => x.IsDeleted == false)
-                .OrderByDescending(x => x.HocPhiId)
+                .OrderBy(x => x.SoTien)
                 .ToList();
         }
 

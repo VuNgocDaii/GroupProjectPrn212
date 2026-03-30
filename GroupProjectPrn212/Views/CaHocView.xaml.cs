@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using GroupProjectPrn212.BLL;
@@ -14,10 +14,58 @@ namespace GroupProjectPrn212.Views
         public CaHocView()
         {
             InitializeComponent();
-            LoadData();
+            if (!DesignerProperties.GetIsInDesignMode(this))
+            {
+                LoadData();
+            }
         }
 
-        private void LoadData() => dgCaHoc.ItemsSource = _bll.GetAll();
+        private void LoadData()
+        {
+            dgCaHoc.ItemsSource = null;
+            dgCaHoc.ItemsSource = _bll.GetAll();
+        }
+
+        private bool ValidateForm(out string message)
+        {
+            if (!FrontendValidation.IsRequired(txtMaCa.Text))
+            {
+                message = "Mã ca không được để trống.";
+                txtMaCa.Focus();
+                return false;
+            }
+
+            if (!FrontendValidation.IsRequired(txtTenCa.Text))
+            {
+                message = "Tên ca không được để trống.";
+                txtTenCa.Focus();
+                return false;
+            }
+
+            if (!TimeOnly.TryParse(txtGioBatDau.Text.Trim(), out TimeOnly start))
+            {
+                message = "Giờ bắt đầu không đúng định dạng HH:mm.";
+                txtGioBatDau.Focus();
+                return false;
+            }
+
+            if (!TimeOnly.TryParse(txtGioKetThuc.Text.Trim(), out TimeOnly end))
+            {
+                message = "Giờ kết thúc không đúng định dạng HH:mm.";
+                txtGioKetThuc.Focus();
+                return false;
+            }
+
+            if (!FrontendValidation.IsTimeRangeValid(start, end))
+            {
+                message = "Giờ kết thúc phải lớn hơn giờ bắt đầu.";
+                txtGioKetThuc.Focus();
+                return false;
+            }
+
+            message = string.Empty;
+            return true;
+        }
 
         private CaHoc BuildEntityFromForm()
         {
@@ -58,6 +106,7 @@ namespace GroupProjectPrn212.Views
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
+            if (!ValidateForm(out string error)) { MessageBox.Show(error); return; }
             var msg = _bll.Add(BuildEntityFromForm());
             MessageBox.Show(msg);
             if (msg == "OK") { LoadData(); ClearForm(); }
@@ -66,6 +115,7 @@ namespace GroupProjectPrn212.Views
         private void btnUpdate_Click(object sender, RoutedEventArgs e)
         {
             if (_selected == null) { MessageBox.Show("Chọn ca học cần sửa."); return; }
+            if (!ValidateForm(out string error)) { MessageBox.Show(error); return; }
             var msg = _bll.Update(BuildEntityFromForm());
             MessageBox.Show(msg);
             if (msg == "OK") { LoadData(); ClearForm(); }

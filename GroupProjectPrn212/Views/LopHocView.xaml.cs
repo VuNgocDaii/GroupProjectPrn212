@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 using GroupProjectPrn212.BLL;
 using GroupProjectPrn212.Models;
@@ -17,8 +18,11 @@ namespace GroupProjectPrn212.Views
         public LopHocView()
         {
             InitializeComponent();
-            LoadComboboxes();
-            LoadData();
+            if (!DesignerProperties.GetIsInDesignMode(this))
+            {
+                LoadComboboxes();
+                LoadData();
+            }
         }
 
         private void LoadComboboxes()
@@ -29,7 +33,94 @@ namespace GroupProjectPrn212.Views
             cbCaHoc.ItemsSource = _caHocBLL.GetAll();
         }
 
-        private void LoadData() => dgLopHoc.ItemsSource = _bll.GetAll();
+        private void LoadData()
+        {
+            dgLopHoc.ItemsSource = null;
+            dgLopHoc.ItemsSource = _bll.GetAll();
+        }
+
+        private bool ValidateForm(out string message)
+        {
+            if (!FrontendValidation.IsRequired(txtMaLop.Text))
+            {
+                message = "Mã lớp không được để trống.";
+                txtMaLop.Focus();
+                return false;
+            }
+
+            if (!FrontendValidation.IsRequired(txtTenLop.Text))
+            {
+                message = "Tên lớp không được để trống.";
+                txtTenLop.Focus();
+                return false;
+            }
+
+            if (cbKhoaHoc.SelectedValue == null)
+            {
+                message = "Vui lòng chọn khóa học.";
+                cbKhoaHoc.Focus();
+                return false;
+            }
+
+            if (cbGiangVien.SelectedValue == null)
+            {
+                message = "Vui lòng chọn giảng viên.";
+                cbGiangVien.Focus();
+                return false;
+            }
+
+            if (cbPhongHoc.SelectedValue == null)
+            {
+                message = "Vui lòng chọn phòng học.";
+                cbPhongHoc.Focus();
+                return false;
+            }
+
+            if (cbCaHoc.SelectedValue == null)
+            {
+                message = "Vui lòng chọn ca học.";
+                cbCaHoc.Focus();
+                return false;
+            }
+
+            if (!dpNgayBatDau.SelectedDate.HasValue)
+            {
+                message = "Vui lòng chọn ngày bắt đầu.";
+                dpNgayBatDau.Focus();
+                return false;
+            }
+
+            if (!dpNgayKetThuc.SelectedDate.HasValue)
+            {
+                message = "Vui lòng chọn ngày kết thúc.";
+                dpNgayKetThuc.Focus();
+                return false;
+            }
+
+            if (dpNgayKetThuc.SelectedDate.Value < dpNgayBatDau.SelectedDate.Value)
+            {
+                message = "Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu.";
+                dpNgayKetThuc.Focus();
+                return false;
+            }
+
+            if (!FrontendValidation.IsPositiveInt(txtSiSoToiDa.Text, out _))
+            {
+                message = "Sĩ số tối đa phải lớn hơn 0.";
+                txtSiSoToiDa.Focus();
+                return false;
+            }
+
+            if (!FrontendValidation.IsRequired(cbTrangThai.Text))
+            {
+                message = "Vui lòng chọn trạng thái.";
+                cbTrangThai.Focus();
+                return false;
+            }
+
+            message = string.Empty;
+            return true;
+        }
 
         private LopHoc BuildEntityFromForm()
         {
@@ -86,6 +177,7 @@ namespace GroupProjectPrn212.Views
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
+            if (!ValidateForm(out string error)) { MessageBox.Show(error); return; }
             var msg = _bll.Add(BuildEntityFromForm());
             MessageBox.Show(msg);
             if (msg == "OK") { LoadData(); ClearForm(); }
@@ -94,6 +186,7 @@ namespace GroupProjectPrn212.Views
         private void btnUpdate_Click(object sender, RoutedEventArgs e)
         {
             if (_selected == null) { MessageBox.Show("Chọn lớp học cần sửa."); return; }
+            if (!ValidateForm(out string error)) { MessageBox.Show(error); return; }
             var msg = _bll.Update(BuildEntityFromForm());
             MessageBox.Show(msg);
             if (msg == "OK") { LoadData(); ClearForm(); }

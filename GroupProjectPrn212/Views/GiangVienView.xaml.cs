@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 using GroupProjectPrn212.BLL;
 using GroupProjectPrn212.Models;
@@ -13,10 +14,58 @@ namespace GroupProjectPrn212.Views
         public GiangVienView()
         {
             InitializeComponent();
-            LoadData();
+            if (!DesignerProperties.GetIsInDesignMode(this))
+            {
+                LoadData();
+            }
         }
 
-        private void LoadData() => dgGiangVien.ItemsSource = _bll.GetAll();
+        private void LoadData()
+        {
+            dgGiangVien.ItemsSource = null;
+            dgGiangVien.ItemsSource = _bll.GetAll();
+        }
+
+        private bool ValidateForm(out string message)
+        {
+            if (!FrontendValidation.IsRequired(txtMaGiangVien.Text))
+            {
+                message = "Mã giảng viên không được để trống.";
+                txtMaGiangVien.Focus();
+                return false;
+            }
+
+            if (!FrontendValidation.IsRequired(txtHoTen.Text))
+            {
+                message = "Họ tên giảng viên không được để trống.";
+                txtHoTen.Focus();
+                return false;
+            }
+
+            if (!FrontendValidation.IsRequired(cbChuyenMon.Text))
+            {
+                message = "Vui lòng chọn chuyên môn.";
+                cbChuyenMon.Focus();
+                return false;
+            }
+
+            if (!FrontendValidation.IsValidPhone(txtSoDienThoai.Text))
+            {
+                message = "Số điện thoại không hợp lệ.";
+                txtSoDienThoai.Focus();
+                return false;
+            }
+
+            if (!FrontendValidation.IsValidEmail(txtEmail.Text))
+            {
+                message = "Email không hợp lệ.";
+                txtEmail.Focus();
+                return false;
+            }
+
+            message = string.Empty;
+            return true;
+        }
 
         private GiangVien BuildEntityFromForm()
         {
@@ -54,6 +103,7 @@ namespace GroupProjectPrn212.Views
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
+            if (!ValidateForm(out string error)) { MessageBox.Show(error); return; }
             var msg = _bll.Add(BuildEntityFromForm());
             MessageBox.Show(msg);
             if (msg == "OK") { LoadData(); ClearForm(); }
@@ -62,6 +112,7 @@ namespace GroupProjectPrn212.Views
         private void btnUpdate_Click(object sender, RoutedEventArgs e)
         {
             if (_selected == null) { MessageBox.Show("Chọn giảng viên cần sửa."); return; }
+            if (!ValidateForm(out string error)) { MessageBox.Show(error); return; }
             var msg = _bll.Update(BuildEntityFromForm());
             MessageBox.Show(msg);
             if (msg == "OK") { LoadData(); ClearForm(); }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using GroupProjectPrn212.BLL;
@@ -16,8 +17,11 @@ namespace GroupProjectPrn212.Views
         public DangKyView()
         {
             InitializeComponent();
-            LoadComboboxes();
-            LoadData();
+            if (!DesignerProperties.GetIsInDesignMode(this))
+            {
+                LoadComboboxes();
+                LoadData();
+            }
         }
 
         private void LoadComboboxes()
@@ -26,7 +30,45 @@ namespace GroupProjectPrn212.Views
             cbLopHoc.ItemsSource = _lopHocBLL.GetAll();
         }
 
-        private void LoadData() => dgDangKy.ItemsSource = _bll.GetAll();
+        private void LoadData()
+        {
+            dgDangKy.ItemsSource = null;
+            dgDangKy.ItemsSource = _bll.GetAll();
+        }
+
+        private bool ValidateForm(out string message)
+        {
+            if (cbHocVien.SelectedValue == null)
+            {
+                message = "Vui lòng chọn học viên.";
+                cbHocVien.Focus();
+                return false;
+            }
+
+            if (cbLopHoc.SelectedValue == null)
+            {
+                message = "Vui lòng chọn lớp học.";
+                cbLopHoc.Focus();
+                return false;
+            }
+
+            if (!dpNgayDangKy.SelectedDate.HasValue)
+            {
+                message = "Vui lòng chọn ngày đăng ký.";
+                dpNgayDangKy.Focus();
+                return false;
+            }
+
+            if (!FrontendValidation.IsRequired(cbTrangThai.Text))
+            {
+                message = "Vui lòng chọn trạng thái.";
+                cbTrangThai.Focus();
+                return false;
+            }
+
+            message = string.Empty;
+            return true;
+        }
 
         private DangKy BuildEntityFromForm()
         {
@@ -61,6 +103,7 @@ namespace GroupProjectPrn212.Views
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
+            if (!ValidateForm(out string error)) { MessageBox.Show(error); return; }
             var msg = _bll.Add(BuildEntityFromForm());
             MessageBox.Show(msg);
             if (msg == "OK") { LoadData(); ClearForm(); }
@@ -69,6 +112,7 @@ namespace GroupProjectPrn212.Views
         private void btnUpdate_Click(object sender, RoutedEventArgs e)
         {
             if (_selected == null) { MessageBox.Show("Chọn đăng ký cần sửa."); return; }
+            if (!ValidateForm(out string error)) { MessageBox.Show(error); return; }
             var msg = _bll.Update(BuildEntityFromForm());
             MessageBox.Show(msg);
             if (msg == "OK") { LoadData(); ClearForm(); }

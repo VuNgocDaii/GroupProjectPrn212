@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 using GroupProjectPrn212.BLL;
 using GroupProjectPrn212.Models;
@@ -13,10 +14,58 @@ namespace GroupProjectPrn212.Views
         public PhongHocView()
         {
             InitializeComponent();
-            LoadData();
+            if (!DesignerProperties.GetIsInDesignMode(this))
+            {
+                LoadData();
+            }
         }
 
-        private void LoadData() => dgPhongHoc.ItemsSource = _bll.GetAll();
+        private void LoadData()
+        {
+            dgPhongHoc.ItemsSource = null;
+            dgPhongHoc.ItemsSource = _bll.GetAll();
+        }
+
+        private bool ValidateForm(out string message)
+        {
+            if (!FrontendValidation.IsRequired(txtMaPhong.Text))
+            {
+                message = "Mã phòng không được để trống.";
+                txtMaPhong.Focus();
+                return false;
+            }
+
+            if (!FrontendValidation.IsRequired(txtTenPhong.Text))
+            {
+                message = "Tên phòng không được để trống.";
+                txtTenPhong.Focus();
+                return false;
+            }
+
+            if (!FrontendValidation.IsPositiveInt(txtSucChua.Text, out _))
+            {
+                message = "Sức chứa phải lớn hơn 0.";
+                txtSucChua.Focus();
+                return false;
+            }
+
+            if (!FrontendValidation.IsRequired(cbLoaiPhong.Text))
+            {
+                message = "Vui lòng chọn loại phòng.";
+                cbLoaiPhong.Focus();
+                return false;
+            }
+
+            if (!FrontendValidation.IsRequired(cbTrangThai.Text))
+            {
+                message = "Vui lòng chọn trạng thái.";
+                cbTrangThai.Focus();
+                return false;
+            }
+
+            message = string.Empty;
+            return true;
+        }
 
         private PhongHoc BuildEntityFromForm()
         {
@@ -58,6 +107,7 @@ namespace GroupProjectPrn212.Views
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
+            if (!ValidateForm(out string error)) { MessageBox.Show(error); return; }
             var msg = _bll.Add(BuildEntityFromForm());
             MessageBox.Show(msg);
             if (msg == "OK") { LoadData(); ClearForm(); }
@@ -66,6 +116,7 @@ namespace GroupProjectPrn212.Views
         private void btnUpdate_Click(object sender, RoutedEventArgs e)
         {
             if (_selected == null) { MessageBox.Show("Chọn phòng học cần sửa."); return; }
+            if (!ValidateForm(out string error)) { MessageBox.Show(error); return; }
             var msg = _bll.Update(BuildEntityFromForm());
             MessageBox.Show(msg);
             if (msg == "OK") { LoadData(); ClearForm(); }

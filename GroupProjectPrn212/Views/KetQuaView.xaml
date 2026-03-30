@@ -17,7 +17,9 @@
                 <StackPanel>
                     <TextBlock Text="Bộ lọc" Style="{StaticResource GroupTitleStyle}"/>
                     <WrapPanel>
-                        <TextBox x:Name="txtKeyword" Width="280" Style="{StaticResource InputTextBoxStyle}"/><Button Content="Tìm" Click="btnSearch_Click" Style="{StaticResource PrimaryButtonStyle}" Width="120"/><Button Content="Làm mới" Click="btnRefresh_Click" Style="{StaticResource SecondaryButtonStyle}" Width="120"/>
+                        <TextBox x:Name="txtKeyword" Width="280" Style="{StaticResource InputTextBoxStyle}"/>
+                        <Button Content="Tìm" Click="btnSearch_Click" Style="{StaticResource PrimaryButtonStyle}" Width="120"/>
+                        <Button Content="Làm mới" Click="btnRefresh_Click" Style="{StaticResource SecondaryButtonStyle}" Width="120"/>
                     </WrapPanel>
                 </StackPanel>
             </Border>
@@ -26,32 +28,39 @@
                 <StackPanel>
                     <TextBlock Text="Thông tin kết quả" Style="{StaticResource GroupTitleStyle}"/>
 
-<Grid>
-    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-    <StackPanel Grid.Column="0" Margin="0,0,12,0">
-        <TextBlock Text="Đăng ký" Style="{StaticResource FieldLabelStyle}"/>
-        <ComboBox x:Name="cbDangKy"
-          SelectedValuePath="DangKyId"
-          Style="{StaticResource InputComboBoxStyle}">
-    <ComboBox.ItemTemplate>
-        <DataTemplate>
-            <TextBlock>
-                <Run Text="{Binding HocVien.HoTen}"/>
-                <Run Text=" - "/>
-                <Run Text="{Binding LopHoc.TenLop}"/>
-            </TextBlock>
-        </DataTemplate>
-    </ComboBox.ItemTemplate>
-</ComboBox>
-        <TextBlock Text="Điểm" Style="{StaticResource FieldLabelStyle}"/>
-        <TextBox x:Name="txtDiem" Style="{StaticResource InputTextBoxStyle}"/>
-    </StackPanel>
-    <StackPanel Grid.Column="1">
-     
-        <TextBlock Text="Ghi chú" Style="{StaticResource FieldLabelStyle}"/>
-        <TextBox x:Name="txtGhiChu" Style="{StaticResource InputTextBoxStyle}"/>
-    </StackPanel>
-</Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                            <TextBlock Text="Đăng ký" Style="{StaticResource FieldLabelStyle}"/>
+                            <ComboBox x:Name="cbDangKy"
+                                      SelectedValuePath="DangKyId"
+                                      Style="{StaticResource InputComboBoxStyle}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding DisplayText}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+
+                            <TextBlock Text="Điểm" Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBox x:Name="txtDiem" Style="{StaticResource InputTextBoxStyle}" TextChanged="txtDiem_TextChanged"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Xếp loại" Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBox x:Name="txtXepLoai"
+                                     Style="{StaticResource InputTextBoxStyle}"
+                                     IsReadOnly="True"
+                                     Background="#F9FAFB"/>
+
+                            <TextBlock Text="Ghi chú" Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBox x:Name="txtGhiChu" Style="{StaticResource InputTextBoxStyle}"/>
+                        </StackPanel>
+                    </Grid>
 
                     <WrapPanel HorizontalAlignment="Right" Margin="0,8,0,0">
                         <Button x:Name="btnAdd" Content="Thêm" Click="btnAdd_Click" Style="{StaticResource PrimaryButtonStyle}" Width="110"/>
@@ -66,14 +75,14 @@
                 <StackPanel>
                     <TextBlock Text="Danh sách kết quả" Style="{StaticResource GroupTitleStyle}"/>
                     <DataGrid x:Name="dgKetQua" SelectionChanged="dgKetQua_SelectionChanged">
-                       <DataGrid.Columns>
-    <DataGridTextColumn Header="ID" Binding="{Binding KetQuaId}" Width="70"/>
-    <DataGridTextColumn Header="Học viên" Binding="{Binding DangKy.HocVien.HoTen}" Width="180"/>
-    <DataGridTextColumn Header="Lớp học" Binding="{Binding DangKy.LopHoc.TenLop}" Width="220"/>
-    <DataGridTextColumn Header="Điểm" Binding="{Binding Diem}" Width="100"/>
-    <DataGridTextColumn Header="Xếp loại" Binding="{Binding XepLoai}" Width="130"/>
-    <DataGridTextColumn Header="Ghi chú" Binding="{Binding GhiChu}" Width="*"/>
-</DataGrid.Columns>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding KetQuaId}" Width="70"/>
+                            <DataGridTextColumn Header="Học viên" Binding="{Binding HocVienTen}" Width="180"/>
+                            <DataGridTextColumn Header="Lớp học" Binding="{Binding LopHocTen}" Width="220"/>
+                            <DataGridTextColumn Header="Điểm" Binding="{Binding Diem}" Width="100"/>
+                            <DataGridTextColumn Header="Xếp loại" Binding="{Binding XepLoai}" Width="130"/>
+                            <DataGridTextColumn Header="Ghi chú" Binding="{Binding GhiChu}" Width="*"/>
+                        </DataGrid.Columns>
                     </DataGrid>
                 </StackPanel>
             </Border>

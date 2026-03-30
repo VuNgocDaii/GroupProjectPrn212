@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using GroupProjectPrn212.BLL;
 using GroupProjectPrn212.Models;
@@ -14,21 +16,81 @@ namespace GroupProjectPrn212.Views
         public HocPhiView()
         {
             InitializeComponent();
-            LoadComboboxes();
-            LoadData();
+            if (!DesignerProperties.GetIsInDesignMode(this))
+            {
+                LoadComboboxes();
+                LoadData();
+            }
         }
 
         private void LoadComboboxes()
         {
+            var dangKyList = _dangKyBLL.GetAll()
+                .Select(x => new
+                {
+                    x.DangKyId,
+                    DisplayText = $"{x.HocVien?.HoTen ?? ""} - {x.LopHoc?.TenLop ?? ""}"
+                })
+                .ToList();
+
             cbDangKy.ItemsSource = null;
-            cbDangKy.ItemsSource = _dangKyBLL.GetAll();
+            cbDangKy.ItemsSource = dangKyList;
         }
 
         private void LoadData()
         {
+            var data = _bll.GetAll()
+                .Select(x => new
+                {
+                    x.HocPhiId,
+                    x.DangKyId,
+                    HocVienTen = x.DangKy?.HocVien?.HoTen ?? "",
+                    LopHocTen = x.DangKy?.LopHoc?.TenLop ?? "",
+                    x.SoTien,
+                    x.NgayThu,
+                    x.TrangThaiThanhToan,
+                    RawData = x
+                })
+                .ToList();
+
             dgHocPhi.ItemsSource = null;
-            dgHocPhi.ItemsSource = _bll.GetAll();
+            dgHocPhi.ItemsSource = data;
             dgHocPhi.Items.Refresh();
+        }
+
+        private bool ValidateForm(out string message)
+        {
+            if (cbDangKy.SelectedValue == null)
+            {
+                message = "Vui lòng chọn đăng ký.";
+                cbDangKy.Focus();
+                return false;
+            }
+
+            if (!FrontendValidation.IsPositiveDecimal(txtSoTien.Text, out _))
+            {
+                message = "Số tiền phải lớn hơn 0.";
+                txtSoTien.Focus();
+                return false;
+            }
+
+            string trangThai = (cbTrangThai.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? cbTrangThai.Text;
+            if (!FrontendValidation.IsRequired(trangThai))
+            {
+                message = "Vui lòng chọn trạng thái thanh toán.";
+                cbTrangThai.Focus();
+                return false;
+            }
+
+            if (trangThai == "Đã đóng" && !dpNgayThu.SelectedDate.HasValue)
+            {
+                message = "Trạng thái Đã đóng bắt buộc phải có ngày thu.";
+                dpNgayThu.Focus();
+                return false;
+            }
+
+            message = string.Empty;
+            return true;
         }
 
         private HocPhi BuildEntityFromForm()
@@ -40,9 +102,7 @@ namespace GroupProjectPrn212.Views
                 HocPhiId = _selected?.HocPhiId ?? 0,
                 DangKyId = cbDangKy.SelectedValue is int dk ? dk : 0,
                 SoTien = soTien,
-                NgayThu = dpNgayThu.SelectedDate.HasValue
-                    ? DateOnly.FromDateTime(dpNgayThu.SelectedDate.Value)
-                    : null,
+                NgayThu = dpNgayThu.SelectedDate.HasValue ? DateOnly.FromDateTime(dpNgayThu.SelectedDate.Value) : null,
                 TrangThaiThanhToan = (cbTrangThai.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? cbTrangThai.Text,
                 IsDeleted = false
             };
@@ -68,9 +128,14 @@ namespace GroupProjectPrn212.Views
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
+            if (!ValidateForm(out string error))
+            {
+                MessageBox.Show(error, "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             var msg = _bll.Add(BuildEntityFromForm());
             MessageBox.Show(msg);
-
             if (msg == "OK")
             {
                 LoadData();
@@ -83,6 +148,12 @@ namespace GroupProjectPrn212.Views
             if (_selected == null)
             {
                 MessageBox.Show("Chọn học phí cần sửa.");
+                return;
+            }
+
+            if (!ValidateForm(out string error))
+            {
+                MessageBox.Show(error, "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -120,7 +191,19 @@ namespace GroupProjectPrn212.Views
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
             dgHocPhi.ItemsSource = null;
-            dgHocPhi.ItemsSource = _bll.GetUnpaidList();
+            dgHocPhi.ItemsSource = _bll.GetUnpaidList()
+                .Select(x => new
+                {
+                    x.HocPhiId,
+                    x.DangKyId,
+                    HocVienTen = x.DangKy?.HocVien?.HoTen ?? "",
+                    LopHocTen = x.DangKy?.LopHoc?.TenLop ?? "",
+                    x.SoTien,
+                    x.NgayThu,
+                    x.TrangThaiThanhToan,
+                    RawData = x
+                })
+                .ToList();
         }
 
         private void btnRefresh_Click(object sender, RoutedEventArgs e)
@@ -144,10 +227,16 @@ namespace GroupProjectPrn212.Views
 
         private void dgHocPhi_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            _selected = dgHocPhi.SelectedItem as HocPhi;
-            if (_selected != null)
+            if (dgHocPhi.SelectedItem == null) return;
+
+            var rawProp = dgHocPhi.SelectedItem.GetType().GetProperty("RawData");
+            if (rawProp != null)
             {
-                FillForm(_selected);
+                _selected = rawProp.GetValue(dgHocPhi.SelectedItem) as HocPhi;
+                if (_selected != null)
+                {
+                    FillForm(_selected);
+                }
             }
         }
     }
